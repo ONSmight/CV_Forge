@@ -1,9 +1,6 @@
-import 'dart:developer';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cv_forge/auth/login_screen.dart';
 import 'package:cv_forge/home_screen.dart';
-import 'package:cv_forge/widgets/button.dart';
-import 'package:cv_forge/widgets/textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -34,10 +31,11 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   Future<void> _signUp() async {
     if (_formKey.currentState!.validate()) {
@@ -47,10 +45,22 @@ class _SignUpFormState extends State<SignUpForm> {
           email: _emailController.text,
           password: _passwordController.text,
         );
+        // store username and email in
+        final userId = userCredential.user!.uid;
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('emailInfo')
+            .doc('info')
+            .set({
+          'username': _usernameController.text,
+          'email': _emailController.text,
+        });
+
         // User signed up successfully, you can perform additional actions here
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          MaterialPageRoute(builder: (context) => HomeScreen()),
         );
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(

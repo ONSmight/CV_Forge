@@ -1,9 +1,5 @@
-import 'dart:developer';
-
 import 'package:cv_forge/auth/signup_screen.dart';
 import 'package:cv_forge/home_screen.dart';
-import 'package:cv_forge/widgets/button.dart';
-import 'package:cv_forge/widgets/textfield.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,7 +45,7 @@ class _LoginFormState extends State<LoginForm> {
         // User logged in successfully, navigate to home screen
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          MaterialPageRoute(builder: (context) => HomeScreen()),
         );
       } on FirebaseAuthException catch (e) {
         // Handle login errors

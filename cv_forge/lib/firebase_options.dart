@@ -78,11 +78,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyCaxnPjuGpPL6n6YKBG5zoEDOjuSI72KMo',
-    appId: '1:419872690422:web:d02054f8969033ff25dcd7',
+    appId: '1:419872690422:web:c15745721e92511f25dcd7',
     messagingSenderId: '419872690422',
     projectId: 'cv-forge',
     authDomain: 'cv-forge.firebaseapp.com',
     storageBucket: 'cv-forge.appspot.com',
-    measurementId: 'G-FP977NB9VV',
+    measurementId: 'G-R517M8FL9J',
   );
+
 }
