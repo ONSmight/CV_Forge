@@ -1,15 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cv_forge/widgets/custom_app_bar.dart';
 import 'package:cv_forge/widgets/custom_drawer.dart';
 import 'package:cv_forge/utils/drawer_action_buttons.dart';
-import 'package:cv_forge/screens/contact_info_screen.dart';
+import 'package:cv_forge/screens/education_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ContactInfoScreen extends StatelessWidget {
   final String cvName;
 
-  ProfileScreen({required this.cvName});
+  ContactInfoScreen({required this.cvName});
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +19,8 @@ class ProfileScreen extends StatelessWidget {
         backgroundColor: Colors.blue.shade700,
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              _showEditCVNameDialog(context, cvName);
-            },
+            icon: Icon(Icons.edit),
+            onPressed: () => _showEditCVNameDialog(context, cvName),
           ),
         ],
       ),
@@ -34,7 +32,7 @@ class ProfileScreen extends StatelessWidget {
         children: [
           Expanded(
             child: Center(
-              child: Text('Profile Screen for CV: $cvName'),
+              child: Text('Contact Info Screen for CV: $cvName'),
             ),
           ),
           Align(
@@ -46,12 +44,12 @@ class ProfileScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ContactInfoScreen(cvName: cvName),
+                      builder: (context) => EducationScreen(cvName: cvName),
                     ),
                   );
                 },
-                label: const Text("Next"),
-                icon: const Icon(Icons.arrow_forward),
+                label: Text("Next"),
+                icon: Icon(Icons.arrow_forward),
               ),
             ),
           ),
@@ -67,20 +65,19 @@ class ProfileScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Edit CV Name'),
+          title: Text('Edit CV Name'),
           content: TextField(
             onChanged: (value) => newCvName = value,
-            decoration: const InputDecoration(hintText: 'New CV Name'),
+            decoration: InputDecoration(hintText: 'New CV Name'),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 if (newCvName.isNotEmpty) {
-                  // First, copy data to the new document with the updated name
                   var userDoc = FirebaseFirestore.instance
                       .collection('users')
                       .doc(FirebaseAuth.instance.currentUser!.uid);
@@ -90,7 +87,6 @@ class ProfileScreen extends StatelessWidget {
                     if (docSnapshot.exists) {
                       var data = docSnapshot.data();
                       userDoc.collection('cvs').doc(newCvName).set(data!);
-                      // Delete the old document
                       cvDoc.delete();
                     }
                   });
@@ -100,12 +96,13 @@ class ProfileScreen extends StatelessWidget {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ProfileScreen(cvName: newCvName),
+                      builder: (context) =>
+                          ContactInfoScreen(cvName: newCvName),
                     ),
                   );
                 }
               },
-              child: const Text('Save'),
+              child: Text('Save'),
             ),
           ],
         );

@@ -1,5 +1,5 @@
 import 'package:cv_forge/auth/signup_screen.dart';
-import 'package:cv_forge/home_screen.dart';
+import 'package:cv_forge/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';

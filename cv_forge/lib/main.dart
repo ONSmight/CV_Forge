@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:cv_forge/auth/login_screen.dart';
 import 'package:cv_forge/auth/splash.dart';
-import 'package:cv_forge/home_screen.dart';
+import 'package:cv_forge/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
