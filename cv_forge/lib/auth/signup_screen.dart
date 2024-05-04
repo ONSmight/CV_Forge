@@ -12,7 +12,7 @@ class SignUpScreen extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Center(child: Text('Sign Up')), // Center the title
+          title: const Center(child: Text('Sign Up')),
         ),
         body: const Center(
           child: SignUpForm(),

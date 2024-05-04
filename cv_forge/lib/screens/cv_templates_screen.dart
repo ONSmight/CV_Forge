@@ -13,10 +13,15 @@ import 'dart:io';
 class CVTemplatesScreen extends StatelessWidget {
   final String cvName;
 
-  const CVTemplatesScreen({super.key, required this.cvName});
+  CVTemplatesScreen({super.key, required this.cvName});
+  late pw.TextStyle sectionHeaderFontStyle;
+  late pw.TextStyle sectionTextFontStyle;
 
   Future<File> generateCvTemplate1(String cvName) async {
     final pdf = pw.Document();
+    sectionHeaderFontStyle = pw.TextStyle(
+        fontWeight: pw.FontWeight.bold, fontSize: 20, color: PdfColors.blue900);
+    sectionTextFontStyle = pw.TextStyle(fontSize: 16);
 
     // Fetch data from Firebase
     var userDoc = FirebaseFirestore.instance
@@ -75,13 +80,15 @@ class CVTemplatesScreen extends StatelessWidget {
 
           // First row with profile pic, name, and profession
           content.add(pw.Row(
-            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: pw.MainAxisAlignment.start,
             children: [
               pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   if (profileImage != null)
-                    pw.Image(profileImage, height: 100, width: 100),
+                    pw.Padding(
+                        padding: pw.EdgeInsets.only(right: 10),
+                        child: pw.Image(profileImage, height: 100, width: 100)),
                 ],
               ),
               pw.Column(
@@ -90,35 +97,42 @@ class CVTemplatesScreen extends StatelessWidget {
                   if (profileDoc.exists)
                     pw.Text(
                       profileDoc.data()?['name'] ?? '',
-                      style: pw.TextStyle(fontSize: 24),
+                      style: const pw.TextStyle(fontSize: 24),
                     ),
                   if (profileDoc.exists)
-                    pw.Text(profileDoc.data()?['profession'] ?? ''),
+                    pw.Text(
+                      profileDoc.data()?['profession'] ?? '',
+                      style: const pw.TextStyle(fontSize: 18),
+                    ),
                 ],
               ),
             ],
           ));
 
           // Solid line
-          content.add(pw.Divider());
+          content.add(pw.Divider(endIndent: 5));
 
           // Second row with phone, address, and links
           content.add(pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
-              if (contactInfoDoc.exists &&
-                  contactInfoDoc.data()?['phone'] != null)
-                pw.Text("Phone: ${contactInfoDoc.data()?['phone']}"),
-              if (contactInfoDoc.exists &&
-                  contactInfoDoc.data()?['address'] != null)
-                pw.Text("Address: ${contactInfoDoc.data()?['address']}"),
+              pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    if (contactInfoDoc.exists &&
+                        contactInfoDoc.data()?['phone'] != null)
+                      pw.Text("${contactInfoDoc.data()?['phone']}"),
+                    if (contactInfoDoc.exists &&
+                        contactInfoDoc.data()?['address'] != null)
+                      pw.Text("${contactInfoDoc.data()?['address']}"),
+                  ]),
               if (links.docs.isNotEmpty)
                 pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: links.docs.map((doc) {
                     final data = doc.data() as Map<String, dynamic>;
                     return pw.Text(
-                      "Link: ${data['social_media_link']}",
+                      "${data['social_media_link']}",
                       style: pw.TextStyle(
                           color: PdfColors.blue,
                           decoration: pw.TextDecoration.underline),
@@ -142,8 +156,11 @@ class CVTemplatesScreen extends StatelessWidget {
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
                       _buildEducationSection(education.docs),
+                      pw.Divider(endIndent: 20),
                       _buildPersonalProjectsSection(personalProjects.docs),
+                      pw.Divider(endIndent: 20),
                       _buildLanguagesSection(languages.docs),
+                      pw.Divider(endIndent: 20),
                       _buildInterestsSection(interests.docs),
                     ],
                   ),
@@ -154,7 +171,9 @@ class CVTemplatesScreen extends StatelessWidget {
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
                       _buildSkillsSection(skills.docs),
+                      pw.Divider(endIndent: 20),
                       _buildWorkExperienceSection(workExperience.docs),
+                      pw.Divider(endIndent: 20),
                       _buildCertificatesSection(certificates.docs),
                     ],
                   ),
@@ -191,12 +210,16 @@ class CVTemplatesScreen extends StatelessWidget {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text("Education",
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        pw.Text("Education", style: sectionHeaderFontStyle),
         ...docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
-          return pw.Text(
-              "${data['studyProgram']} at ${data['placeOfEducation']} (${data['fromDate']} - ${data['toDate']})");
+          return pw.Column(children: [
+            pw.Padding(
+                padding: pw.EdgeInsets.only(bottom: 10.0),
+                child: pw.Text(
+                    "${data['studyProgram']} at ${data['placeOfEducation']} (${data['fromDate']} - ${data['toDate']})",
+                    style: sectionTextFontStyle))
+          ]);
         }).toList(),
       ],
     );
@@ -208,12 +231,14 @@ class CVTemplatesScreen extends StatelessWidget {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text("Personal Projects",
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        pw.Text("Personal Projects", style: sectionHeaderFontStyle),
         ...docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
-          return pw.Text(
-              "${data['projectName']} (${data['fromDate']} - ${data['toDate']}) - ${data['description']}");
+          return pw.Padding(
+              padding: pw.EdgeInsets.only(bottom: 10.0),
+              child: pw.Text(
+                  "${data['projectName']} (${data['fromDate']} - ${data['toDate']}) - ${data['description']}",
+                  style: sectionTextFontStyle));
         }).toList(),
       ],
     );
@@ -225,11 +250,13 @@ class CVTemplatesScreen extends StatelessWidget {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text("Languages",
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        pw.Text("Languages", style: sectionHeaderFontStyle),
         ...docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
-          return pw.Text("${data['language']} - ${data['level']}");
+          return pw.Padding(
+              padding: pw.EdgeInsets.only(bottom: 10.0),
+              child: pw.Text("${data['language']} - ${data['level']}",
+                  style: sectionTextFontStyle));
         }).toList(),
       ],
     );
@@ -241,11 +268,12 @@ class CVTemplatesScreen extends StatelessWidget {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text("Interests",
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        pw.Text("Interests", style: sectionHeaderFontStyle),
         ...docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
-          return pw.Text(data['interest']);
+          return pw.Padding(
+              padding: pw.EdgeInsets.only(bottom: 10.0),
+              child: pw.Text(data['interest'], style: sectionTextFontStyle));
         }).toList(),
       ],
     );
@@ -257,11 +285,19 @@ class CVTemplatesScreen extends StatelessWidget {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text("Skills", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-        ...docs.map((doc) {
-          final data = doc.data() as Map<String, dynamic>;
-          return pw.Text(data['skill']);
-        }).toList(),
+        pw.Text("Skills", style: sectionHeaderFontStyle),
+        pw.Row(children: [
+          ...docs.map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return pw.Column(children: [
+              pw.Container(
+                  margin: const pw.EdgeInsets.all(15.0),
+                  padding: const pw.EdgeInsets.all(3.0),
+                  decoration: pw.BoxDecoration(border: pw.Border.all()),
+                  child: pw.Text(data['skill'], style: sectionTextFontStyle))
+            ]);
+          }).toList()
+        ]),
       ],
     );
   }
@@ -272,12 +308,14 @@ class CVTemplatesScreen extends StatelessWidget {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text("Work Experience",
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        pw.Text("Work Experience", style: sectionHeaderFontStyle),
         ...docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
-          return pw.Text(
-              "${data['position']} at ${data['workplace']} (${data['fromDate']} - ${data['toDate']})");
+          return pw.Padding(
+              padding: pw.EdgeInsets.only(bottom: 10.0),
+              child: pw.Text(
+                  "${data['position']} at ${data['workplace']} (${data['fromDate']} - ${data['toDate']})",
+                  style: sectionTextFontStyle));
         }).toList(),
       ],
     );
@@ -289,12 +327,14 @@ class CVTemplatesScreen extends StatelessWidget {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text("Certificates",
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        pw.Text("Certificates", style: sectionHeaderFontStyle),
         ...docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
-          return pw.Text(
-              "${data['certificate_name']} (${data['start_date']} - ${data['end_date']})");
+          return pw.Padding(
+              padding: pw.EdgeInsets.only(bottom: 10.0),
+              child: pw.Text(
+                  "${data['certificate_name']} (${data['start_date']} - ${data['end_date']})",
+                  style: sectionTextFontStyle));
         }).toList(),
       ],
     );
