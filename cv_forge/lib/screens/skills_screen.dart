@@ -179,6 +179,15 @@ class _SkillsScreenState extends State<SkillsScreen> {
                 if (newSkill.isNotEmpty) {
                   _addSkill(newSkill);
                   Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please fill the field.'),
+                      duration: Duration(seconds: 2),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
               child: const Text('OK'),
@@ -221,7 +230,7 @@ class _SkillsScreenState extends State<SkillsScreen> {
       alignment: Alignment.center,
       child: ElevatedButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.blue),
+          backgroundColor: MaterialStateProperty.all(Colors.green),
         ),
         onPressed: () => _showAddSkillDialog(context),
         child: const Text(

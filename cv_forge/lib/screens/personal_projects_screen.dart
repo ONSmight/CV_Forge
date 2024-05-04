@@ -141,7 +141,7 @@ class _PersonalProjectsScreenState extends State<PersonalProjectsScreen> {
       alignment: Alignment.center,
       child: ElevatedButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.blue.shade700),
+          backgroundColor: MaterialStateProperty.all(Colors.brown),
         ),
         onPressed: () => _showAddPersonalProjectDialog(context),
         child: const Text(
@@ -274,6 +274,15 @@ class _PersonalProjectsScreenState extends State<PersonalProjectsScreen> {
                     description,
                   );
                   Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please fill all fields.'),
+                      duration: Duration(seconds: 2),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
               child: const Text('OK'),

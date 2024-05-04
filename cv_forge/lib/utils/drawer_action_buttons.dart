@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cv_forge/screens/home_screen.dart';
 import 'package:cv_forge/screens/profile_screen.dart';
-import 'package:cv_forge/screens/contact_info_screen.dart';
+import 'package:cv_forge/screens/contact_me_screen.dart';
 import 'package:cv_forge/screens/education_screen.dart';
 import 'package:cv_forge/screens/skills_screen.dart';
 import 'package:cv_forge/screens/personal_projects_screen.dart';
@@ -29,13 +29,13 @@ List<Widget> buildDrawerActionButtons(BuildContext context, String cvName) {
     _buildCustomTile(
       context,
       icon: Icons.contact_mail,
-      text: 'Contact Info',
+      text: 'Contact Me',
       backgroundColor: Colors.deepOrange[700],
       onTap: () {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => ContactInfoScreen(cvName: cvName)),
+              builder: (context) => ContactMeScreen(cvName: cvName)),
         );
       },
     ),

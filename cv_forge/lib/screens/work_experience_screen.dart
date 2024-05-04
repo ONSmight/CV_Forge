@@ -76,7 +76,7 @@ class _WorkExperienceScreenState extends State<WorkExperienceScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: widget.cvName,
-        backgroundColor: Colors.indigo.shade700,
+        backgroundColor: Colors.blue.shade700,
       ),
       drawer: CustomDrawer(
         actionButtons: buildDrawerActionButtons(context, widget.cvName),
@@ -291,6 +291,15 @@ class _WorkExperienceScreenState extends State<WorkExperienceScreen> {
                     achievements,
                   );
                   Navigator.pop(context); // Close dialog on successful add
+                } else {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please fill all fields.'),
+                      duration: Duration(seconds: 2),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
               child: const Text('OK'),

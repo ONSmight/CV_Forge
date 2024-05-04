@@ -51,7 +51,7 @@ class _LanguagesAndInterestsScreenState
     return Scaffold(
       appBar: CustomAppBar(
         title: widget.cvName,
-        backgroundColor: Colors.cyan.shade700,
+        backgroundColor: Colors.blue.shade700,
       ),
       drawer: CustomDrawer(
         actionButtons: buildDrawerActionButtons(context, widget.cvName),
@@ -248,6 +248,15 @@ class _LanguagesAndInterestsScreenState
                 if (language.isNotEmpty && selectedLevel != null) {
                   _addLanguage(language, selectedLevel!);
                   Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please fill the fields.'),
+                      duration: Duration(seconds: 2),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
               child: const Text('Add'),
@@ -307,6 +316,15 @@ class _LanguagesAndInterestsScreenState
                 if (interest.isNotEmpty) {
                   _addInterest(interest);
                   Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please fill the fields.'),
+                      duration: Duration(seconds: 2),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
               child: const Text('Add'),

@@ -167,6 +167,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       builder: (context) => ProfileScreen(cvName: cvName),
                     ),
                   );
+                } else {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please fill the CV name.'),
+                      duration: Duration(seconds: 2),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
               child: const Text('Create'),

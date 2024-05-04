@@ -70,7 +70,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: widget.cvName,
-        backgroundColor: Colors.indigo.shade700,
+        backgroundColor: Colors.blue.shade700,
       ),
       drawer: CustomDrawer(
         actionButtons: buildDrawerActionButtons(context, widget.cvName),
@@ -120,16 +120,16 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const Icon(
-          Icons.verified, // Changed icon
-          color: Colors.red, // Changed color
+          Icons.verified,
+          color: Colors.red,
           size: 40.0,
         ),
         Text(
-          'Certificates', // Changed text
+          'Certificates',
           style: TextStyle(
             fontSize: 24.0,
             fontWeight: FontWeight.bold,
-            color: Colors.red[700], // Consistent color
+            color: Colors.red[700],
           ),
         ),
         const SizedBox(height: 16.0),
@@ -142,7 +142,7 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
       alignment: Alignment.center,
       child: ElevatedButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.indigo.shade700),
+          backgroundColor: MaterialStateProperty.all(Colors.red),
         ),
         onPressed: () => _showAddCertificateDialog(context),
         child: const Text(
@@ -259,6 +259,15 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                     description,
                   );
                   Navigator.pop(context); // Close dialog on successful add
+                } else {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please fill all fields.'),
+                      duration: Duration(seconds: 2),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
               child: const Text('OK'),
