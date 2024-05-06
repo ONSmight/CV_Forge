@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -97,8 +95,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _nameController.text = data['name'] ?? ''; // Retrieve the name
           _professionController.text =
               data['profession'] ?? ''; // Retrieve the profession
-          _savedAudioDuration =
-              data['audio_duration'] ?? ''; // Retrieve the audio duration
         }
       }
     } catch (_) {}
@@ -169,7 +165,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         await _audioRecorder.startRecorder(toFile: _audioFilePath);
 
         _recordDuration = Duration.zero;
-        _recordTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+        _recordTimer =
+            Timer.periodic(const Duration(seconds: 1), (Timer timer) {
           setState(() {
             _recordDuration = Duration(seconds: _recordDuration.inSeconds + 1);
           });
@@ -276,12 +273,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             if (_savedName != null)
               Text(
                 'Name: $_savedName', // Display the saved name
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
             if (_savedProfession != null)
               Text(
                 'Profession: $_savedProfession', // Display the saved profession
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
             _buildNameField(),
             _buildProfessionField(),
@@ -299,8 +296,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           );
         },
-        label: Text("Next"),
-        icon: Icon(Icons.arrow_forward),
+        label: const Text("Next"),
+        icon: const Icon(Icons.arrow_forward),
       ),
     );
   }
@@ -356,13 +353,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             ElevatedButton.icon(
               onPressed: _chooseProfileImage,
-              icon: Icon(Icons.image),
-              label: Text("Choose Image"),
+              icon: const Icon(Icons.image),
+              label: const Text("Choose Image"),
             ),
             ElevatedButton.icon(
               onPressed: _captureProfileImage,
-              icon: Icon(Icons.camera),
-              label: Text("Take Photo"),
+              icon: const Icon(Icons.camera),
+              label: const Text("Take Photo"),
             ),
           ],
         ),
@@ -377,7 +374,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         controller: _nameController,
         decoration: InputDecoration(
           labelText: 'Name',
-          prefixIcon: Icon(Icons.person),
+          prefixIcon: const Icon(Icons.person),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
@@ -393,7 +390,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         controller: _professionController,
         decoration: InputDecoration(
           labelText: 'Profession',
-          prefixIcon: Icon(Icons.work),
+          prefixIcon: const Icon(Icons.work),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
@@ -425,7 +422,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: Colors.grey.withOpacity(0.5),
                 spreadRadius: 3,
                 blurRadius: 7,
-                offset: Offset(0, 3),
+                offset: const Offset(0, 3),
               ),
             ],
           ),
@@ -434,23 +431,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               _isRecording
                   ? IconButton(
-                      icon: Icon(Icons.stop, color: Colors.red),
+                      icon: const Icon(Icons.stop, color: Colors.red),
                       onPressed: _stopRecording,
                     )
                   : IconButton(
-                      icon: Icon(Icons.mic, color: Colors.teal),
+                      icon: const Icon(Icons.mic, color: Colors.teal),
                       onPressed: _startRecording,
                     ),
               if (_isRecording)
                 Text(_formatDuration(_recordDuration)), // Display duration
               if (_hasRecorded)
                 IconButton(
-                  icon: Icon(Icons.play_arrow, color: Colors.green),
+                  icon: const Icon(Icons.play_arrow, color: Colors.green),
                   onPressed: _playRecording,
                 ),
               if (_hasRecorded)
                 IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
+                  icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: _showDeleteConfirmation,
                 ),
             ],
@@ -461,7 +458,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: const EdgeInsets.only(top: 8),
             child: Text(
               'Duration: $_savedAudioDuration', // Show the saved duration
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
       ],
@@ -473,21 +470,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Delete Recording"),
-          content: Text("Are you sure you want to delete this recording?"),
+          title: const Text("Delete Recording"),
+          content:
+              const Text("Are you sure you want to delete this recording?"),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
             ),
             TextButton(
               onPressed: () {
                 _deleteRecording();
                 Navigator.pop(context);
               },
-              child: Text("Delete"),
+              child: const Text("Delete"),
             ),
           ],
         );

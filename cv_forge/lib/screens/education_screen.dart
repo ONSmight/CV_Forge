@@ -161,6 +161,8 @@ class _EducationScreenState extends State<EducationScreen> {
     TextEditingController toDateController = TextEditingController();
     TextEditingController gpaOrAchievementsController = TextEditingController();
     bool isPresent = false;
+    DateTime? fromDate;
+    DateTime? toDate;
 
     showDialog(
       context: context,
@@ -205,8 +207,9 @@ class _EducationScreenState extends State<EducationScreen> {
                         context,
                         (pickedDate) {
                           if (pickedDate != null) {
+                            fromDate = pickedDate;
                             fromDateController.text =
-                                DateFormat('MM/YYYY').format(pickedDate);
+                                DateFormat('MM/yyyy').format(pickedDate);
                           }
                         },
                       ),
@@ -227,8 +230,9 @@ class _EducationScreenState extends State<EducationScreen> {
                         context,
                         (pickedDate) {
                           if (pickedDate != null) {
+                            toDate = pickedDate;
                             toDateController.text =
-                                DateFormat('MM/YYYY').format(pickedDate);
+                                DateFormat('MM/yyyy').format(pickedDate);
                           }
                         },
                       ),
@@ -239,9 +243,7 @@ class _EducationScreenState extends State<EducationScreen> {
                     onChanged: (value) {
                       setState(() {
                         isPresent = value!;
-                        if (isPresent) {
-                          toDateController.clear();
-                        }
+                        toDateController.clear();
                       });
                     },
                   ),
@@ -273,16 +275,13 @@ class _EducationScreenState extends State<EducationScreen> {
 
                 if (studyProgram.isNotEmpty &&
                     placeOfEducation.isNotEmpty &&
-                    fromDateController.text.isNotEmpty &&
-                    (isPresent || toDateController.text.isNotEmpty)) {
-                  var fromDate = fromDateController.text;
-                  var toDate = isPresent ? 'present' : toDateController.text;
-
+                    fromDate != null &&
+                    (toDate != null || isPresent)) {
                   _addEducation(
                     studyProgram,
                     placeOfEducation,
-                    fromDate,
-                    toDate,
+                    fromDate.toString(),
+                    toDate.toString(),
                     gpaOrAchievements,
                   );
                   Navigator.pop(context); // Close dialog on successful add
@@ -309,13 +308,15 @@ class _EducationScreenState extends State<EducationScreen> {
     BuildContext context,
     ValueChanged<DateTime?> onDateSelected,
   ) async {
+    DateTime initialDate = DateTime.now();
     final pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: initialDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
       fieldLabelText: 'Select a date',
       fieldHintText: 'MM/YYYY',
+      helpText: 'Select a date',
     );
 
     if (pickedDate != null) {

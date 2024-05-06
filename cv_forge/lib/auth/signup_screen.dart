@@ -1,21 +1,39 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cv_forge/auth/login_screen.dart';
-import 'package:cv_forge/screens/home_screen.dart';
+import 'package:cv_forge/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cv_forge/screens/home_screen.dart';
+import 'package:cv_forge/auth/login_screen.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Center(child: Text('Sign Up')),
-        ),
-        body: const Center(
-          child: SignUpForm(),
+    return Scaffold(
+      appBar: CustomAppBar(
+        title: "CV Forge",
+        backgroundColor: Colors.blue.shade700,
+      ),
+      body: const Center(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Sign Up",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 24.0),
+              SignUpForm(),
+            ],
+          ),
         ),
       ),
     );
@@ -45,7 +63,7 @@ class _SignUpFormState extends State<SignUpForm> {
           email: _emailController.text,
           password: _passwordController.text,
         );
-        // store username and email in
+
         final userId = userCredential.user!.uid;
         await FirebaseFirestore.instance
             .collection('users')
@@ -57,12 +75,10 @@ class _SignUpFormState extends State<SignUpForm> {
           'email': _emailController.text,
         });
 
-        // User signed up successfully, you can perform additional actions here
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
         );
-        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Registration Successful'),
@@ -71,11 +87,9 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
         );
       } on FirebaseAuthException catch (e) {
-        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.message ?? 'Authentication failed.'),
-            duration: Duration(seconds: 2),
             backgroundColor: Colors.red,
           ),
         );
@@ -85,87 +99,131 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextFormField(
-              controller: _usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter your username';
-                }
-                return null;
-              },
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextFormField(
+            controller: _usernameController,
+            decoration: InputDecoration(
+              labelText: 'Username',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              prefixIcon: const Icon(Icons.person),
             ),
-            SizedBox(height: 16.0),
-            TextFormField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(labelText: 'Email'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter your email';
-                } else if (!value.contains('@')) {
-                  return 'Please enter a valid email';
-                }
-                return null;
-              },
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Please enter your username';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16.0),
+          TextFormField(
+            controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              labelText: 'Email',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              prefixIcon: const Icon(Icons.email),
             ),
-            SizedBox(height: 16.0),
-            TextFormField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(labelText: 'Password'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter your password';
-                } else if (value.length < 6) {
-                  return 'Password must be at least 6 characters long';
-                }
-                return null;
-              },
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Please enter your email';
+              } else if (!value.contains('@')) {
+                return 'Please enter a valid email';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16.0),
+          TextFormField(
+            controller: _passwordController,
+            obscureText: true,
+            decoration: InputDecoration(
+              labelText: 'Password',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              prefixIcon: const Icon(Icons.lock),
             ),
-            SizedBox(height: 16.0),
-            TextFormField(
-              controller: _confirmPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(labelText: 'Confirm Password'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please confirm your password';
-                } else if (value != _passwordController.text) {
-                  return 'Passwords do not match';
-                }
-                return null;
-              },
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Please enter your password';
+              } else if (value.length < 6) {
+                return 'Password must be at least 6 characters long';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16.0),
+          TextFormField(
+            controller: _confirmPasswordController,
+            obscureText: true,
+            decoration: InputDecoration(
+              labelText: 'Confirm Password',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              prefixIcon: const Icon(Icons.lock),
             ),
-            SizedBox(height: 24.0),
-            ElevatedButton(
-              onPressed: () => _signUp(),
-              child: Text('Sign Up'),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Please confirm your password';
+              } else if (value != _passwordController.text) {
+                return 'Passwords do not match';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 24.0),
+          ElevatedButton(
+            onPressed: _signUp,
+            style: ElevatedButton.styleFrom(
+              primary: Colors.blue.shade700, // Custom background color
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12), // Rounded corners
+              ),
+              padding: const EdgeInsets.symmetric(
+                vertical: 14,
+                horizontal: 20,
+              ), // Padding
             ),
-            SizedBox(height: 16.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Already have an account? "),
-                InkWell(
-                  onTap: () => Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
+            child: const Text(
+              'Sign up',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16, // Larger font size
+                fontWeight: FontWeight.bold, // Bold text
+              ),
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("Already have an account? "),
+              InkWell(
+                onTap: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
                   ),
-                  child:
-                      const Text("Login", style: TextStyle(color: Colors.red)),
-                )
-              ],
-            ),
-          ],
-        ),
+                ),
+                child: const Text(
+                  "Login",
+                  style: TextStyle(
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

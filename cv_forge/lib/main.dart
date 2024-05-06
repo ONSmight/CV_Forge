@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cv_forge/auth/login_screen.dart';
-import 'package:cv_forge/auth/splash.dart';
 import 'package:cv_forge/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,6 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Chat',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const SplashScreen();
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasData) {

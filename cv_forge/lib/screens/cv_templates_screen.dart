@@ -21,7 +21,7 @@ class CVTemplatesScreen extends StatelessWidget {
     final pdf = pw.Document();
     sectionHeaderFontStyle = pw.TextStyle(
         fontWeight: pw.FontWeight.bold, fontSize: 20, color: PdfColors.blue900);
-    sectionTextFontStyle = pw.TextStyle(fontSize: 16);
+    sectionTextFontStyle = const pw.TextStyle(fontSize: 16);
 
     // Fetch data from Firebase
     var userDoc = FirebaseFirestore.instance
@@ -87,7 +87,7 @@ class CVTemplatesScreen extends StatelessWidget {
                 children: [
                   if (profileImage != null)
                     pw.Padding(
-                        padding: pw.EdgeInsets.only(right: 10),
+                        padding: const pw.EdgeInsets.only(right: 10),
                         child: pw.Image(profileImage, height: 100, width: 100)),
                 ],
               ),
@@ -133,7 +133,7 @@ class CVTemplatesScreen extends StatelessWidget {
                     final data = doc.data() as Map<String, dynamic>;
                     return pw.Text(
                       "${data['social_media_link']}",
-                      style: pw.TextStyle(
+                      style: const pw.TextStyle(
                           color: PdfColors.blue,
                           decoration: pw.TextDecoration.underline),
                     );
@@ -215,7 +215,7 @@ class CVTemplatesScreen extends StatelessWidget {
           final data = doc.data() as Map<String, dynamic>;
           return pw.Column(children: [
             pw.Padding(
-                padding: pw.EdgeInsets.only(bottom: 10.0),
+                padding: const pw.EdgeInsets.only(bottom: 10.0),
                 child: pw.Text(
                     "${data['studyProgram']} at ${data['placeOfEducation']} (${data['fromDate']} - ${data['toDate']})",
                     style: sectionTextFontStyle))
@@ -235,7 +235,7 @@ class CVTemplatesScreen extends StatelessWidget {
         ...docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
           return pw.Padding(
-              padding: pw.EdgeInsets.only(bottom: 10.0),
+              padding: const pw.EdgeInsets.only(bottom: 10.0),
               child: pw.Text(
                   "${data['projectName']} (${data['fromDate']} - ${data['toDate']}) - ${data['description']}",
                   style: sectionTextFontStyle));
@@ -254,7 +254,7 @@ class CVTemplatesScreen extends StatelessWidget {
         ...docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
           return pw.Padding(
-              padding: pw.EdgeInsets.only(bottom: 10.0),
+              padding: const pw.EdgeInsets.only(bottom: 10.0),
               child: pw.Text("${data['language']} - ${data['level']}",
                   style: sectionTextFontStyle));
         }).toList(),
@@ -272,7 +272,7 @@ class CVTemplatesScreen extends StatelessWidget {
         ...docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
           return pw.Padding(
-              padding: pw.EdgeInsets.only(bottom: 10.0),
+              padding: const pw.EdgeInsets.only(bottom: 10.0),
               child: pw.Text(data['interest'], style: sectionTextFontStyle));
         }).toList(),
       ],
@@ -312,7 +312,7 @@ class CVTemplatesScreen extends StatelessWidget {
         ...docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
           return pw.Padding(
-              padding: pw.EdgeInsets.only(bottom: 10.0),
+              padding: const pw.EdgeInsets.only(bottom: 10.0),
               child: pw.Text(
                   "${data['position']} at ${data['workplace']} (${data['fromDate']} - ${data['toDate']})",
                   style: sectionTextFontStyle));
@@ -331,7 +331,7 @@ class CVTemplatesScreen extends StatelessWidget {
         ...docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
           return pw.Padding(
-              padding: pw.EdgeInsets.only(bottom: 10.0),
+              padding: const pw.EdgeInsets.only(bottom: 10.0),
               child: pw.Text(
                   "${data['certificate_name']} (${data['start_date']} - ${data['end_date']})",
                   style: sectionTextFontStyle));
@@ -350,29 +350,119 @@ class CVTemplatesScreen extends StatelessWidget {
       drawer: CustomDrawer(
         actionButtons: buildDrawerActionButtons(context, cvName),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0), // Add padding around the grid
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ElevatedButton(
-              onPressed: () => generateCvTemplate1(cvName),
-              child: Text("Generate Template 1"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // Placeholder for template 2
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Template 2 not yet implemented."),
-                    backgroundColor: Colors.orange,
+            _buildScreenHeader(),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 3,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 210 / 297, // Spacing between rows
+                children: [
+                  _buildTemplateButton(
+                    context,
+                    "Template", // First part of the label
+                    "1", // Second part of the label
+                    onPressed: () => generateCvTemplate1(cvName),
                   ),
-                );
-              },
-              child: Text("Generate Template 2"),
+                  _buildTemplateButton(
+                    context,
+                    "Template",
+                    "2",
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Template 2 not yet implemented."),
+                          backgroundColor: Colors.orange,
+                        ),
+                      );
+                    },
+                  ),
+                  _buildTemplateButton(
+                    context,
+                    "Template",
+                    "3",
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Template 3 not yet implemented."),
+                          backgroundColor: Colors.orange,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildTemplateButton(
+      BuildContext context,
+      String label1, // Main text, e.g., "Template"
+      String label2, // Secondary text, e.g., "1"
+      {required VoidCallback onPressed}) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.lightBlue.shade100, // Light blue background
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              label1,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            Text(
+              label2,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Widget _buildScreenHeader() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Icon(
+        Icons.document_scanner,
+        color: Colors.pink[700], // Icon for education
+        size: 40.0,
+      ),
+      const SizedBox(height: 8.0),
+      Text(
+        'CV Templates',
+        style: TextStyle(
+          fontSize: 24.0,
+          fontWeight: FontWeight.bold,
+          color: Colors.pink[700], // Color for header
+        ),
+      ),
+      const SizedBox(height: 16.0), // Spacing between the header and content
+    ],
+  );
 }
